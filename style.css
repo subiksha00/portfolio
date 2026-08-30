@@ -1160,9 +1160,9 @@ button { border: none; font-family: inherit; cursor: pointer; }
   .section { padding: 4rem 0; }
   .hero-content { grid-template-columns: 1fr; text-align: center; padding-top: 7rem; }
   .hero-visual { display: none; }
-  .hero-actions { justify-content: center; }
-  .hero-stats { justify-content: center; }
-  .hero-desc { margin: 0 auto 2rem; }
+  .hero-actions { justify-content: center; flex-wrap: wrap; }
+  .hero-stats { justify-content: center; flex-wrap: wrap; }
+  .hero-desc { margin: 0 auto 2rem; padding: 0 1rem; }
   .about-grid { grid-template-columns: 1fr; }
   .skills-grid { grid-template-columns: 1fr; }
   .certs-img-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1192,6 +1192,8 @@ button { border: none; font-family: inherit; cursor: pointer; }
 @media (max-width: 480px) {
   .hero-title { font-size: 2.2rem; }
   .hero-stats { gap: 1rem; }
+  .hero-actions { flex-direction: column; width: 100%; }
+  .hero-actions .btn { width: 100%; justify-content: center; }
   .about-attributes { grid-template-columns: 1fr 1fr; }
   .contact-form-wrap { padding: 1.5rem; }
   .certs-img-grid { grid-template-columns: 1fr; }
