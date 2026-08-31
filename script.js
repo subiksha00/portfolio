@@ -419,3 +419,163 @@ document.addEventListener('dragstart', (e) => {
 document.addEventListener('selectstart', (e) => {
   e.preventDefault();
 });
+
+/* ============================================================
+   THEME TOGGLE
+   ============================================================ */
+const themeToggle = document.getElementById('themeToggle');
+
+// Check local storage for theme preference
+const savedTheme = localStorage.getItem('portfolio-theme');
+if (savedTheme === 'light') {
+  document.documentElement.setAttribute('data-theme', 'light');
+}
+
+themeToggle?.addEventListener('click', () => {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  if (currentTheme === 'light') {
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('portfolio-theme', 'dark');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'light');
+    localStorage.setItem('portfolio-theme', 'light');
+  }
+});
+
+/* ============================================================
+   PROJECT DETAILS MODAL
+   ============================================================ */
+let projectsData = {};
+
+const pm = document.getElementById('projectModal');
+const pmClose = document.getElementById('projectModalClose');
+const pmBackdrop = document.getElementById('projectModalBackdrop');
+const pmImg = document.getElementById('pmImg');
+const pmTitle = document.getElementById('pmTitle');
+const pmDesc = document.getElementById('pmDesc');
+const pmBadges = document.getElementById('pmBadges');
+const pmTech = document.getElementById('pmTech');
+const pmLiveLink = document.getElementById('pmLiveLink');
+const pmGithubLink = document.getElementById('pmGithubLink');
+
+async function fetchGitHubProjects() {
+  const grid = document.getElementById('github-projects-grid');
+  const loader = document.getElementById('projectsLoader');
+  
+  if (!grid) return;
+
+  try {
+    const response = await fetch('https://api.github.com/users/subiksha00/repos?sort=updated&per_page=6');
+    if (!response.ok) throw new Error('Failed to fetch projects');
+    const repos = await response.json();
+    
+    // Clear loader
+    grid.innerHTML = '';
+    
+    repos.forEach((repo, index) => {
+      // Store in projectsData for modal
+      projectsData[repo.name] = {
+        title: repo.name.replace(/-/g, ' ').replace(/(^\w|\s\w)/g, m => m.toUpperCase()),
+        desc: repo.description || 'A project developed and maintained by Subiksha V.',
+        tech: repo.language ? [repo.language] : ['Code'],
+        badges: repo.topics && repo.topics.length > 0 ? repo.topics : ['GitHub'],
+        img: '', // Placeholder
+        liveLink: repo.homepage || '',
+        githubLink: repo.html_url
+      };
+
+      // Generate Card HTML
+      const delay = index * 0.1;
+      const card = document.createElement('div');
+      card.className = `project-card reveal-left visible`;
+      card.style.animationDelay = `${delay}s`;
+      card.innerHTML = `
+        <div class="project-glow"></div>
+        <div class="project-number">0${index + 1}</div>
+        <div class="project-header">
+          <div class="project-icon">📁</div>
+          <div class="project-badges">
+            ${projectsData[repo.name].badges.slice(0, 2).map(b => `<span class="project-badge">${b}</span>`).join('')}
+          </div>
+        </div>
+        <h3 class="project-title">${projectsData[repo.name].title}</h3>
+        <p class="project-desc">${projectsData[repo.name].desc.substring(0, 150)}${projectsData[repo.name].desc.length > 150 ? '...' : ''}</p>
+        <div class="project-tech">
+          ${projectsData[repo.name].tech.map(t => `<span>${t}</span>`).join('')}
+        </div>
+        <div class="project-links">
+          <button class="project-link open-project-modal" data-project="${repo.name}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            View Details
+          </button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    // Re-attach event listeners for modals
+    attachModalListeners();
+
+  } catch (error) {
+    console.error('Error fetching GitHub projects:', error);
+    if (loader) loader.innerHTML = '<p>Error loading projects. Please check my GitHub profile directly!</p>';
+  }
+}
+
+function attachModalListeners() {
+  document.querySelectorAll('.open-project-modal').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const projectId = btn.getAttribute('data-project');
+      const data = projectsData[projectId];
+      if (!data) return;
+
+      pmTitle.textContent = data.title;
+      pmDesc.textContent = data.desc;
+      
+      // Set image or hide if empty
+      if (data.img) {
+        pmImg.src = data.img;
+        pmImg.style.display = 'block';
+      } else {
+        pmImg.removeAttribute('src');
+        pmImg.style.display = 'none';
+        pmImg.parentElement.innerHTML = '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-size: 1.5rem; opacity: 0.5;">Project Preview Coming Soon</div>';
+      }
+
+      pmBadges.innerHTML = data.badges.map(b => `<span>${b}</span>`).join('');
+      pmTech.innerHTML = data.tech.map(t => `<span>${t}</span>`).join('');
+      
+      pmLiveLink.href = data.liveLink;
+      if (data.liveLink) {
+        pmLiveLink.style.display = 'inline-flex';
+      } else {
+        pmLiveLink.style.display = 'none';
+      }
+
+      pmGithubLink.href = data.githubLink;
+
+      pm.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+}
+
+// Fetch on load
+window.addEventListener('DOMContentLoaded', fetchGitHubProjects);
+
+function closeProjectModal() {
+  pm.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+pmClose?.addEventListener('click', closeProjectModal);
+pmBackdrop?.addEventListener('click', closeProjectModal);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && pm?.classList.contains('open')) {
+    closeProjectModal();
+  }
+});
