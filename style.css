@@ -2331,3 +2331,313 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   LIGHT THEME
+   ============================================================ */
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f4f4f5;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border: rgba(168, 85, 247, 0.2);
+  --border-hover: rgba(168, 85, 247, 0.5);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(0, 0, 0, 0.05);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.theme-toggle {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+}
+
+.theme-toggle:hover {
+  background: rgba(168, 85, 247, 0.1);
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.theme-toggle .moon-icon {
+  opacity: 0;
+  transform: rotate(90deg) scale(0);
+}
+
+[data-theme="light"] .theme-toggle .sun-icon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0);
+}
+
+[data-theme="light"] .theme-toggle .moon-icon {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+
+/* ============================================================
+   PROJECT MODAL
+   ============================================================ */
+.project-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s ease;
+}
+
+.project-modal.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.project-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+}
+
+.project-modal-content {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 1;
+  transform: translateY(20px) scale(0.95);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.project-modal.open .project-modal-content {
+  transform: translateY(0) scale(1);
+}
+
+.project-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  z-index: 10;
+  transition: var(--transition);
+}
+
+.project-modal-close:hover {
+  background: var(--purple);
+  color: white;
+}
+
+.project-modal-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+@media (min-width: 768px) {
+  .project-modal-body {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.pm-image-wrap {
+  width: 100%;
+  height: 250px;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+@media (min-width: 768px) {
+  .pm-image-wrap {
+    height: 100%;
+    min-height: 400px;
+  }
+}
+
+.pm-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none; /* Hide if empty */
+}
+
+.pm-image-wrap img[src] {
+  display: block;
+}
+
+.pm-info {
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.pm-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.pm-badges span {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  background: rgba(168, 85, 247, 0.1);
+  color: var(--purple-light);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.pm-info h2 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.pm-info p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.pm-tech {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.pm-tech span {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-sm);
+}
+
+.pm-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   STICKY SOCIAL BAR
+   ============================================================ */
+.sticky-social {
+  position: fixed;
+  left: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .sticky-social {
+    display: block;
+  }
+}
+
+.sticky-social ul {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sticky-social ul li a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  border-radius: 50%;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.sticky-social ul li a:hover {
+  background: var(--gradient-1);
+  color: white;
+  transform: scale(1.1) translateX(5px);
+  box-shadow: var(--shadow-purple);
+  border-color: transparent;
+}
+
+.sticky-social ul li a svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ============================================================
+   PROJECTS LOADER
+   ============================================================ */
+.projects-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+  width: 100%;
+  grid-column: 1 / -1;
+  color: var(--text-secondary);
+}
+
+.loader-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--purple);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
